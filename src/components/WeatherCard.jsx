@@ -7,13 +7,16 @@ import {
   FaTemperatureHigh,
   FaEye,
   FaCompress,
-  FaArrowUp,
-  FaArrowDown,
   FaMapMarkerAlt,
   FaClock,
 } from "react-icons/fa";
 
+/**
+ * WeatherCard Component - Displays detailed weather information
+ * @param {Object} data - Weather data object from API
+ */
 const WeatherCard = ({ data }) => {
+  // Show placeholder if no weather data
   if (!data) {
     return (
       <motion.div
@@ -26,6 +29,7 @@ const WeatherCard = ({ data }) => {
     );
   }
 
+  // Framer Motion animation variants for staggered entrance
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -46,7 +50,11 @@ const WeatherCard = ({ data }) => {
     },
   };
 
-  // Format time
+  /**
+   * Formats Unix timestamp to readable time format
+   * @param {number} timestamp - Unix timestamp in seconds
+   * @returns {string} Formatted time string
+   */
   const formatTime = (timestamp) => {
     const date = new Date(timestamp * 1000);
     return date.toLocaleTimeString("en-US", {
@@ -56,7 +64,11 @@ const WeatherCard = ({ data }) => {
     });
   };
 
-  // Format date
+  /**
+   * Formats Unix timestamp to readable date format
+   * @param {number} timestamp - Unix timestamp in seconds
+   * @returns {string} Formatted date string
+   */
   const formatDate = (timestamp) => {
     const date = new Date(timestamp * 1000);
     return date.toLocaleDateString("en-US", {
@@ -67,7 +79,11 @@ const WeatherCard = ({ data }) => {
     });
   };
 
-  // Get weather icon based on condition
+  /**
+   * Returns emoji icon based on weather condition
+   * @param {string} main - Main weather condition from API
+   * @returns {string} Emoji icon for the condition
+   */
   const getWeatherIcon = (main) => {
     switch (main?.toLowerCase()) {
       case "clear":
@@ -112,18 +128,21 @@ const WeatherCard = ({ data }) => {
           className="bg-gradient-to-br from-blue-500 via-blue-600 to-purple-700 rounded-3xl shadow-2xl p-8 text-white mb-8 backdrop-blur-xl"
         >
           <div className="grid md:grid-cols-2 gap-8">
-            {/* Left Section - Main Info */}
+            {/* Left Section - Main Weather Information */}
             <motion.div variants={itemVariants} className="flex flex-col justify-center">
+              {/* City Name and Location */}
               <div className="flex items-center gap-3 mb-4">
                 <FaMapMarkerAlt size={20} className="text-yellow-300" />
                 <h1 className="text-5xl font-bold">{data.name}</h1>
               </div>
 
+              {/* Current Date */}
               <p className="text-blue-100 mb-6 flex items-center gap-2">
                 <FaClock size={16} />
                 {formatDate(data.dt)}
               </p>
 
+              {/* Large Temperature Display with Weather Icon */}
               <div className="flex items-center gap-6 mb-8">
                 <div className="text-8xl">{getWeatherIcon(data.weather)}</div>
                 <div>
@@ -132,15 +151,16 @@ const WeatherCard = ({ data }) => {
                 </div>
               </div>
 
+              {/* Feels Like Temperature */}
               <div className="bg-white/50 bg-opacity-10 rounded-2xl p-4 backdrop-blur-md">
                 <p className="text-sm text-blue-100 mb-2">Feels Like</p>
                 <p className="text-4xl font-bold">{Math.round(data.feels_like)}°C</p>
               </div>
             </motion.div>
 
-            {/* Right Section - Key Stats */}
+            {/* Right Section - Key Weather Statistics Grid */}
             <motion.div variants={itemVariants} className="grid grid-cols-2 gap-4">
-              {/* Humidity */}
+              {/* Humidity Card */}
               <div className="bg-white/80 bg-opacity-10 rounded-2xl p-6 backdrop-blur-md hover:bg-opacity-20 transition">
                 <div className="flex items-center gap-3 mb-3">
                   <FaTint className="text-blue-500 text-2xl" />
@@ -149,7 +169,7 @@ const WeatherCard = ({ data }) => {
                 <p className="text-blue-500 text-4xl font-bold text-center">{data.humidity}%</p>
               </div>
 
-              {/* Wind Speed */}
+              {/* Wind Speed Card */}
               <div className="bg-white/80 bg-opacity-10 rounded-2xl p-6 backdrop-blur-md hover:bg-opacity-20 transition">
                 <div className="flex items-center gap-3 mb-3">
                   <FaWind className="text-cyan-500 text-2xl" />
@@ -158,7 +178,7 @@ const WeatherCard = ({ data }) => {
                 <p className="text-cyan-500 text-4xl font-bold text-center">{Math.round(data.wind_speed)} m/s</p>
               </div>
 
-              {/* Pressure */}
+              {/* Atmospheric Pressure Card */}
               <div className="bg-white/80 bg-opacity-10 rounded-2xl p-6 backdrop-blur-md hover:bg-opacity-20 transition">
                 <div className="flex items-center gap-3 mb-3">
                   <FaCompress className="text-purple-500 text-2xl" />
@@ -167,11 +187,11 @@ const WeatherCard = ({ data }) => {
                 <p className="text-purple-500 text-4xl font-bold text-center">{data.pressure} hPa</p>
               </div>
 
-              {/* Visibility */}
+              {/* Visibility Card */}
               <div className="bg-white/80 bg-opacity-10 rounded-2xl p-6 backdrop-blur-md hover:bg-opacity-20 transition">
                 <div className="flex items-center gap-3 mb-3">
                   <FaEye className="text-orange-500 text-2xl" />
-                <p className="text-orange-500 text-sm">Visibility</p>
+                  <p className="text-orange-500 text-sm">Visibility</p>
                 </div>
                 <p className="text-orange-500 text-4xl font-bold text-center">{(data.visibility / 1000).toFixed(1)} km</p>
               </div>
@@ -179,9 +199,9 @@ const WeatherCard = ({ data }) => {
           </div>
         </motion.div>
 
-        {/* Additional Details Grid */}
+        {/* Additional Weather Details Grid */}
         <motion.div variants={itemVariants} className="grid md:grid-cols-3 gap-6 mb-8">
-          {/* Temperature Details */}
+          {/* Temperature Range Card */}
           <div className="bg-gradient-to-br from-red-400 to-orange-500 rounded-2xl shadow-lg p-6 text-white backdrop-blur-xl">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <FaTemperatureHigh size={20} />
@@ -203,7 +223,7 @@ const WeatherCard = ({ data }) => {
             </div>
           </div>
 
-          {/* Atmospheric Details */}
+          {/* Atmosphere Conditions Card */}
           <div className="bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl shadow-lg p-6 text-white backdrop-blur-xl">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <FaCloudSun size={20} />
@@ -225,7 +245,7 @@ const WeatherCard = ({ data }) => {
             </div>
           </div>
 
-          {/* Wind & Pressure Details */}
+          {/* Wind and Pressure Details Card */}
           <div className="bg-gradient-to-br from-purple-400 to-indigo-500 rounded-2xl shadow-lg p-6 text-white backdrop-blur-xl">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <FaWind size={20} />
@@ -248,13 +268,14 @@ const WeatherCard = ({ data }) => {
           </div>
         </motion.div>
 
-        {/* Location Coordinates */}
+        {/* Location Coordinates and Local Time */}
         <motion.div
           variants={itemVariants}
           className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl shadow-lg p-6 text-white backdrop-blur-xl"
         >
           <h3 className="text-lg font-semibold mb-4">Location Details</h3>
           <div className="grid md:grid-cols-3 gap-4">
+            {/* Latitude Information */}
             <div className="flex items-center gap-3">
               <FaMapMarkerAlt className="text-yellow-300 text-xl" />
               <div>
@@ -262,6 +283,8 @@ const WeatherCard = ({ data }) => {
                 <p className="text-lg font-bold">{data.latitude?.toFixed(4)}</p>
               </div>
             </div>
+
+            {/* Longitude Information */}
             <div className="flex items-center gap-3">
               <FaMapMarkerAlt className="text-yellow-300 text-xl" />
               <div>
@@ -269,6 +292,8 @@ const WeatherCard = ({ data }) => {
                 <p className="text-lg font-bold">{data.longitude?.toFixed(4)}</p>
               </div>
             </div>
+
+            {/* Local Time Information */}
             <div className="flex items-center gap-3">
               <FaClock className="text-yellow-300 text-xl" />
               <div>

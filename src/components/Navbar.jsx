@@ -3,11 +3,21 @@ import { motion } from "framer-motion";
 import { FaSun, FaMapMarkerAlt } from "react-icons/fa";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
 
+/**
+ * Navbar Component - Top navigation bar with search and geolocation
+ * @param {Function} onSearch - Callback function for search
+ */
 const Navbar = ({ onSearch }) => {
+  // Mobile menu state
   const [isOpen, setIsOpen] = useState(false);
+  // City input state
   const [city, setCity] = useState("");
+  // Geolocation loading state
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Handles city search submission
+   */
   const handleSearch = () => {
     if (!city.trim()) return;
     onSearch(city);
@@ -15,6 +25,10 @@ const Navbar = ({ onSearch }) => {
     setIsOpen(false);
   };
 
+  /**
+   * Handles current location detection and reverse geocoding
+   * Uses browser's Geolocation API and Nominatim for reverse geocoding
+   */
   const handleCurrentLocation = () => {
     setLoading(true);
     
@@ -23,7 +37,7 @@ const Navbar = ({ onSearch }) => {
         async (position) => {
           const { latitude, longitude } = position.coords;
           try {
-            // Reverse geocoding to get city name from coordinates
+            // Use Nominatim to get city name from coordinates
             const nominatimUrl = import.meta.env.VITE_NOMINATIM_URL;
             const res = await fetch(
               `${nominatimUrl}/reverse?lat=${latitude}&lon=${longitude}&format=json`
@@ -31,6 +45,7 @@ const Navbar = ({ onSearch }) => {
             const data = await res.json();
             const cityName = data.address?.city || data.address?.town || data.address?.village || "Unknown";
             
+            // Trigger search with detected city
             onSearch(cityName);
             setCity("");
             setIsOpen(false);
@@ -60,11 +75,12 @@ const Navbar = ({ onSearch }) => {
       className="fixed w-full top-0 left-0 z-50 backdrop-blur-lg shadow-md border-b border-blue-300 bg-gradient-to-r from-blue-600 to-blue-500"
     >
       <div className="max-w-6xl mx-auto flex justify-between items-center px-4 py-3 md:py-4">
-        {/* Logo */}
+        {/* Logo Section */}
         <motion.div
           whileHover={{ scale: 1.05 }}
           className="flex items-center gap-2 text-white cursor-pointer"
         >
+          {/* Animated sun icon */}
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
@@ -74,7 +90,7 @@ const Navbar = ({ onSearch }) => {
           <h1 className="text-2xl font-bold tracking-wide">WeatherHub</h1>
         </motion.div>
 
-        {/* Desktop Search */}
+        {/* Desktop Search Bar - Hidden on mobile */}
         <div className="hidden md:flex items-center gap-2">
           <input
             value={city}
@@ -102,7 +118,7 @@ const Navbar = ({ onSearch }) => {
           </motion.button>
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Menu Toggle Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="md:hidden text-white p-2 rounded-lg hover:bg-blue-500"
@@ -111,7 +127,7 @@ const Navbar = ({ onSearch }) => {
         </button>
       </div>
 
-      {/* Mobile Search Dropdown */}
+      {/* Mobile Search Dropdown - Visible only on mobile */}
       {isOpen && (
         <motion.div
           initial={{ height: 0, opacity: 0 }}
